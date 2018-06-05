@@ -26,7 +26,7 @@ class MapViewController: UIViewController {
 		let locationManager = CLLocationManager()
 		var userLocation: CLLocation?
 		var targets = [ARItem]()
-	var previousDegrees : Double = 0
+		var previousDegrees : Double = 0
 	
 		func setupLocations() {
 				// IMPORTANT: Item descriptions must be unique

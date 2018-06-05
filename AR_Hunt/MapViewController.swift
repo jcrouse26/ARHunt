@@ -26,14 +26,13 @@ class MapViewController: UIViewController {
 	let locationManager = CLLocationManager()
 	var userLocation: CLLocation?
 	var targets = [ARItem]()
-	var previousDegrees : Double = 0
-	var currentLat = 37.768436
-	var currentLong = -122.430411
+	var previousDegrees : Double = 0 // Initial heading (0º == Due North)
+	var currentLat = 37.768436 // 68 Belcher
+	var currentLong = -122.430411 // 68 Belcher
 	
 	func setupCourse() {
 		var i = 0
 		while i < 20 {
-			print(currentLat, currentLong, " currentLat, currentLong")
 			let multiplier = 0.00135
 			let randDegrees = Double(arc4random_uniform(180)) - 90
 			let nextCoordinateLat = currentLat + multiplier*__cospi((randDegrees + previousDegrees)/180)
@@ -43,7 +42,6 @@ class MapViewController: UIViewController {
 			targets.append(newTarget)
 			self.mapView.addAnnotation(newAnnotation)
 			previousDegrees = randDegrees + previousDegrees
-			print("randDegrees ==", randDegrees)
 			currentLat = nextCoordinateLat
 			currentLong = nextCoordinateLong
 			i += 1
@@ -96,23 +94,22 @@ extension MapViewController: MKMapViewDelegate {
 		let coordinate = view.annotation!.coordinate
 		if let userCoordinate = userLocation {
 			// Make sure the tapped item is within range of the users location.
-			if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) <= 1000000 {
+			if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) <= 40 {
 				// Add to array of winnings
 				if let title = view.annotation!.title! {
 					winnings.append(title)
-					/*
+					
 					// Display alert
 					let alert = UIAlertController(title: "Congrats!", message: "You're RICH! You've won \(title)", preferredStyle: UIAlertControllerStyle.alert)
 					
 					alert.addAction(UIAlertAction(title: "Thanks!", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in
 					print(alert)
 					}))
-					//self.present(alert, animated: true)
-					*/
+					self.present(alert, animated: true)
+					self.mapView.removeAnnotation(view.annotation!)
+					
+					/*
 					// create next object
-					
-					print(previousDegrees, " Previous degrees")
-					
 					let currentLat = coordinate.latitude
 					let currentLong = coordinate.longitude
 					let multiplier = 0.00135
@@ -123,11 +120,10 @@ extension MapViewController: MKMapViewDelegate {
 					let newAnnotation = MapAnnotation(location: newTarget.location.coordinate, item: newTarget)
 					self.mapView.addAnnotation(newAnnotation)
 					self.mapView.removeAnnotation(view.annotation!)
-					print(randDegrees)
 					
 					previousDegrees = randDegrees + previousDegrees
-					print(previousDegrees, " previous Degrees")
 					// transitionToGameScreen()
+					*/
 				}
 			} else if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) > 40 {
 				let distance = Int(userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)))
@@ -136,7 +132,7 @@ extension MapViewController: MKMapViewDelegate {
 				alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in
 					print(alert)
 				}))
-				//self.present(alert, animated: true)
+				self.present(alert, animated: true)
 			}
 		}
 	}

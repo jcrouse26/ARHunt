@@ -1,21 +1,15 @@
 /*
- //
+//
 ////
 ////////
 ////////////
 ////////////////
-////////
+//////// Copyright
 //// Jason Crouse
-
-
 / 2 /\ 0 /\ 1 /\ 8 /
-/ 0 /\ 1 /\ 8 /\ 2 /
-/ 1 /\ 8 /\ 2 /\ 0 /
-/ 8 /\ 2 /\ 0 /\ 1 /
- 
- 
-////////////////////////////////////////
-
+/ 0 /
+/ 1 /
+/ 8 /
 */
 
 
@@ -32,6 +26,7 @@ class MapViewController: UIViewController {
 		let locationManager = CLLocationManager()
 		var userLocation: CLLocation?
 		var targets = [ARItem]()
+	var previousDegrees : Double = 0
 	
 		func setupLocations() {
 				// IMPORTANT: Item descriptions must be unique
@@ -73,7 +68,7 @@ extension MapViewController: MKMapViewDelegate {
   	func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
     		self.userLocation = userLocation.location
   	}
-  
+	
 		func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
 		
 				// Return if user has selected "My Location" instead of a pin
@@ -97,16 +92,23 @@ extension MapViewController: MKMapViewDelegate {
 										//self.present(alert, animated: true)
 										*/
 										// create next object
+									
+										print(previousDegrees, " Previous degrees")
+									
 										let currentLat = coordinate.latitude
 										let currentLong = coordinate.longitude
 										let multiplier = 0.00135
-										let randDegrees = Double(arc4random_uniform(90))
-										let nextCoordinateLat = currentLat + multiplier*__cospi(randDegrees/180)
-										let nextCoordinateLong = currentLong + multiplier*__sinpi(randDegrees/180)
+										let randDegrees = Double(arc4random_uniform(180)) - 90
+										let nextCoordinateLat = currentLat + multiplier*__cospi((randDegrees + previousDegrees)/180)
+										let nextCoordinateLong = currentLong + multiplier*__sinpi((randDegrees + previousDegrees)/180)
 										let newTarget = ARItem(itemDescription: "new", location: CLLocation(latitude: nextCoordinateLat, longitude: nextCoordinateLong), itemNode: nil)
 										let newAnnotation = MapAnnotation(location: newTarget.location.coordinate, item: newTarget)
 										self.mapView.addAnnotation(newAnnotation)
 										self.mapView.removeAnnotation(view.annotation!)
+										print(randDegrees)
+									
+										previousDegrees = randDegrees + previousDegrees
+										print(previousDegrees, " previous Degrees")
 						
 										// transitionToGameScreen()
 										}

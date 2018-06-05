@@ -1,24 +1,24 @@
 /*
- * Copyright (c) 2017 Razeware LLC
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+ //
+////
+////////
+////////////
+////////////////
+////////
+//// Jason Crouse
+
+
+/ 2 /\ 0 /\ 1 /\ 8 /
+/ 0 /\ 1 /\ 8 /\ 2 /
+/ 1 /\ 8 /\ 2 /\ 0 /
+/ 8 /\ 2 /\ 0 /\ 1 /
+ 
+ 
+////////////////////////////////////////
+
+*/
+
+
 
 import UIKit
 import MapKit
@@ -43,42 +43,6 @@ class MapViewController: UIViewController {
       37.768436, longitude: -122.430411), itemNode: nil)
     targets.append(firstTarget)
     
-    let secondTarget = ARItem(itemDescription: "0.71 BTC", location: CLLocation(latitude:
-      37.765288, longitude: -122.439970), itemNode: nil)
-    targets.append(secondTarget)
-    
-    let thirdTarget = ARItem(itemDescription: "1.66 BTC", location: CLLocation(latitude:
-      37.765288, longitude: -122.429970), itemNode: nil)
-    targets.append(thirdTarget)
-    
-    let fourthTarget = ARItem(itemDescription: "0.44 BTC", location: CLLocation(latitude:
-      37.769434, longitude: -122.431986), itemNode: nil)
-    targets.append(fourthTarget)
-    
-    let fifthTarget = ARItem(itemDescription: "2.39 BTC", location: CLLocation(latitude:
-      37.770621, longitude: -122.434271), itemNode: nil)
-    targets.append(fifthTarget)
-    
-    let sixthTarget = ARItem(itemDescription: "0.46 BTC", location: CLLocation(latitude:
-      37.768136, longitude: -122.441706), itemNode: nil)
-    targets.append(sixthTarget)
-    
-    let seventhTarget = ARItem(itemDescription: "0.30 BTC", location: CLLocation(latitude:
-      37.765388, longitude: 122.443530), itemNode: nil)
-    targets.append(seventhTarget)
-    
-    let eighthTarget = ARItem(itemDescription: "0.52 BTC", location: CLLocation(latitude:
-      37.768365, longitude: -122.432426), itemNode: nil)
-    targets.append(eighthTarget)
-    
-    let ninthTarget = ARItem(itemDescription: "1.88 BTC", location: CLLocation(latitude:
-      37.770629, longitude: -122.430956), itemNode: nil)
-    targets.append(ninthTarget)
-    
-    
-    let tenthTarget = ARItem(itemDescription: "3.87 BTC", location: CLLocation(latitude:
-      37.768934, longitude: -122.427030), itemNode: nil)
-    targets.append(tenthTarget)
     
     // In this loop you iterate through all items inside the targets array and add an annotation for each target.
     for item in targets {
@@ -89,6 +53,7 @@ class MapViewController: UIViewController {
       
     }
   }
+  
   
   @IBOutlet weak var mapView: MKMapView!
   
@@ -104,16 +69,11 @@ class MapViewController: UIViewController {
     }
   }
   
-  override func viewDidAppear(_ animated: Bool) {
-    // do something, maybe update locationManager
-  }
-  
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.destination is ProfileViewController {
         let vc = segue.destination as? ProfileViewController
         vc?.winnings = winnings
         vc?.userLocation = userLocation
-        
     }
   }
 }
@@ -136,7 +96,7 @@ extension MapViewController: MKMapViewDelegate {
     if let userCoordinate = userLocation {
     
       // Make sure the tapped item is within range of the users location.
-      if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) <= 40 {
+      if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) <= 1000000 {
         
         // Add to array of winnings
         
@@ -148,22 +108,21 @@ extension MapViewController: MKMapViewDelegate {
           alert.addAction(UIAlertAction(title: "Thanks!", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in
             print(alert)
           }))
-          self.present(alert, animated: true)
-        
-          // Remove object from map
+          //self.present(alert, animated: true)
+          
+          // create next object
+          let currentLat = coordinate.latitude
+          let currentLong = coordinate.longitude
+          let multiplier = 0.00135
+          let randDegrees = Double(arc4random_uniform(90))
+          let nextCoordinateLat = currentLat + multiplier*__cospi(randDegrees/180)
+          let nextCoordinateLong = currentLong + multiplier*__sinpi(randDegrees/180)
+          let newTarget = ARItem(itemDescription: "new", location: CLLocation(latitude: nextCoordinateLat, longitude: nextCoordinateLong), itemNode: nil)
+          let newAnnotation = MapAnnotation(location: newTarget.location.coordinate, item: newTarget)
+          self.mapView.addAnnotation(newAnnotation)
           self.mapView.removeAnnotation(view.annotation!)
-          /*
-           // Instantiate an instance of ARViewController from the storyboard.
-           let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-           if let viewController = storyboard.instantiateViewController(withIdentifier: "ARViewController") as? ViewController {
-           // more code later
-            // This line checks if the tapped annotation is a MapAnnotation.
-           if let mapAnnotation = view.annotation as? MapAnnotation {
-              // Finally, you present viewController.
-              self.present(viewController, animated: true, completion: nil)
-           }
-           }*/
+          
+          // transitionToGameScreen()
         }
       } else if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) > 40 {
         let distance = Int(userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)))
@@ -172,10 +131,21 @@ extension MapViewController: MKMapViewDelegate {
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in
           print(alert)
         }))
-        self.present(alert, animated: true)
+        //self.present(alert, animated: true)
         
       }
     }
   }
+  /*
+   // Transitions to AR, QUIZ, OR GAMESCREEN
+   func transitionToGameScreen() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let viewController = storyboard.instantiateViewController(withIdentifier: "") as? ViewController {
+              if let mapAnnotation = view.annotation as? MapAnnotation {
+                    self.present(viewController, animated: true, completion: nil)
+              }
+        }
+   }
   
+  */
 }

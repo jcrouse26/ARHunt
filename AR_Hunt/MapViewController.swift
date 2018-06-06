@@ -29,7 +29,7 @@ class MapViewController: UIViewController {
     var previousDegrees : Double = 0
 	
 	let belcher : CLLocation = CLLocation(latitude: 37.768360, longitude: -122.430378)
-    
+	
     func setupLocations() {
         // IMPORTANT: Item descriptions must be unique
         let firstTarget = ARItem(itemDescription: "1.12 BTC", location: CLLocation(latitude: belcher.coordinate.latitude, longitude: belcher.coordinate.longitude), itemNode: nil)
@@ -41,9 +41,10 @@ class MapViewController: UIViewController {
             if !winnings.contains(annotation.item.itemDescription) {
                 self.mapView.addAnnotation(annotation)
             }
+            
         }
     }
-    
+	
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -56,11 +57,16 @@ class MapViewController: UIViewController {
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        // do something, maybe update locationManager
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.destination is ProfileViewController {
             let vc = segue.destination as? ProfileViewController
             vc?.winnings = winnings
             vc?.userLocation = userLocation
+            
         }
     }
 }
@@ -70,12 +76,21 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         self.userLocation = userLocation.location
     }
-	/*func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-		print("something is happening here?")
-		let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "annotation")
-		return annotationView
-	}*/
-	
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard let annotation = annotation as? MapAnnotation else { return nil }
+        if annotation.captured == false { return nil }
+        let identifier = "pin"
+        var view: MKPinAnnotationView
+        if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView {
+            dequeuedView.annotation = annotation
+            view = dequeuedView
+        } else {
+            view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            view.pinTintColor = UIColor.lightGray
+        }
+        return view
+    }
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
         // Return if user has selected "My Location" instead of a pin
@@ -83,10 +98,14 @@ extension MapViewController: MKMapViewDelegate {
         
         // Here you get the coordinate of the selected annotation.
         let coordinate = view.annotation!.coordinate
+        
+        // Make sure the optional userLocation is populated.
         if let userCoordinate = userLocation {
+            
             // Make sure the tapped item is within range of the users location.
             if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) <= 40 {
                 // Add to array of winnings
+                
                 if let title = view.annotation!.title! {
                     winnings.append(title)
                     
@@ -118,6 +137,14 @@ extension MapViewController: MKMapViewDelegate {
 					
 					// If we wanted to do an AR Screen...
                     // transitionToGameScreen()
+                    // Attempt to create it as a MapAnnotation (custom class)
+                    guard let annotation = view.annotation as? MapAnnotation else { return }
+                    annotation.captured = true
+                    
+                    // Remove annotation from map
+                    self.mapView.removeAnnotation(view.annotation!)
+                    self.mapView.addAnnotation(annotation)
+                  
                 }
             } else if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) > 40 {
                 let distance = Int(userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)))
@@ -127,8 +154,10 @@ extension MapViewController: MKMapViewDelegate {
                     print(alert)
                 }))
                 self.present(alert, animated: true)
+                
             }
-			self.mapView.deselectAnnotation(view.annotation, animated: true)
+            self.mapView.deselectAnnotation(view.annotation, animated: true)
         }
     }
+    
 }

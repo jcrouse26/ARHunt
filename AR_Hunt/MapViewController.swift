@@ -26,7 +26,7 @@ class MapViewController: UIViewController {
     let locationManager = CLLocationManager()
     var userLocation: CLLocation?
     var targets = [ARItem]()
-    var previousDegrees : Double = 0
+    var previousDegrees : Double = -75
     
 	@IBOutlet weak var winningsLabel: UILabel!
 	
@@ -117,7 +117,7 @@ extension MapViewController: MKMapViewDelegate {
         if let userCoordinate = userLocation {
             
             // Make sure the tapped item is within range of the users location.
-            if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) <= 40 {
+            if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) <= 4000 {
                 // Add to array of winnings
                 
                 if let title = view.annotation!.title! {

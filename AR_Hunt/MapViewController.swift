@@ -28,7 +28,9 @@ class MapViewController: UIViewController {
     var targets = [ARItem]()
     var previousDegrees : Double = 0
     
-    let belcher : CLLocation = CLLocation(latitude: 37.768360, longitude: -122.430378)
+	@IBOutlet weak var winningsLabel: UILabel!
+	
+	let belcher : CLLocation = CLLocation(latitude: 37.768360, longitude: -122.430378)
     
     func setupLocations() {
         // IMPORTANT: Item descriptions must be unique
@@ -119,7 +121,11 @@ extension MapViewController: MKMapViewDelegate {
                 // Add to array of winnings
                 
                 if let title = view.annotation!.title! {
+                    // If we wanted to do an AR Screen... we'd do it here
+                    // For now... just let the homies get their prize... FOR FREE!
+                    
                     winnings.append(title)
+					winningsLabel.text = String(winnings.count)
                     
                     // Display alert
                     let alert = UIAlertController(title: "Congrats!", message: "You're RICH! You've won \(title)", preferredStyle: UIAlertControllerStyle.alert)
@@ -128,6 +134,9 @@ extension MapViewController: MKMapViewDelegate {
                         print(alert)
                     }))
                     self.present(alert, animated: true)
+                    
+                    // Add vibration so John's ladies can truly enjoy BitcoinGO ;)
+                    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
                     
                     // create next object
                     
@@ -146,8 +155,6 @@ extension MapViewController: MKMapViewDelegate {
                     
                     // Some math to ensure proper bearing for next time
                     previousDegrees = randDegrees + previousDegrees
-                    
-                    // If we wanted to do an AR Screen...
 		
                     // Attempt to create it as a MapAnnotation (custom class)
                     guard let annotation = view.annotation as? MapAnnotation else { return }
@@ -156,6 +163,7 @@ extension MapViewController: MKMapViewDelegate {
                     // Remove and add new annotation to map
                     self.mapView.removeAnnotation(view.annotation!)
                     self.mapView.addAnnotation(annotation)
+                
                 }
                 
             } else if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) > 40 {

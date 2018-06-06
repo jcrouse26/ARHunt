@@ -117,7 +117,7 @@ extension MapViewController: MKMapViewDelegate {
         if let userCoordinate = userLocation {
             
             // Make sure the tapped item is within range of the users location.
-            if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) <= 4000 {
+            if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) <= 45 {
                 // Add to array of winnings
                 
                 if let title = view.annotation!.title! {

@@ -41,7 +41,6 @@ class MapViewController: UIViewController {
             if !winnings.contains(annotation.item.itemDescription) {
                 self.mapView.addAnnotation(annotation)
             }
-            
         }
     }
 	
@@ -55,10 +54,6 @@ class MapViewController: UIViewController {
         if CLLocationManager.authorizationStatus() == .notDetermined {
             locationManager.requestWhenInUseAuthorization()
         }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        // do something, maybe update locationManager
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -93,8 +88,25 @@ extension MapViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
-        // Return if user has selected "My Location" instead of a pin
-        if view.annotation?.title! == "My Location" { return }
+        // Return and deselect if user has selected "My Location" instead of a pin
+        if view.annotation?.title! == "My Location" {
+            self.mapView.deselectAnnotation(view.annotation, animated: true)
+            return
+        }
+        if view.reuseIdentifier! == "pin" {
+            // create an alert saying you've already won
+            let alert = UIAlertController(title: "Nice Try!", message: "You already collected this one. Get off your ass and collect a new one.", preferredStyle: UIAlertControllerStyle.alert)
+            
+            alert.addAction(UIAlertAction(title: "I'm sorry, won't happen again", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in
+                //print(alert)
+            }))
+            self.present(alert, animated: true)
+            
+            // deselect this pin and return
+            self.mapView.deselectAnnotation(view.annotation, animated: true)
+            return
+        }
+        
         
         // Here you get the coordinate of the selected annotation.
         let coordinate = view.annotation!.coordinate
@@ -141,11 +153,11 @@ extension MapViewController: MKMapViewDelegate {
                     guard let annotation = view.annotation as? MapAnnotation else { return }
                     annotation.captured = true
                     
-                    // Remove annotation from map
+                    // Remove and add new annotation to map
                     self.mapView.removeAnnotation(view.annotation!)
                     self.mapView.addAnnotation(annotation)
-                  
                 }
+                
             } else if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) > 40 {
                 let distance = Int(userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)))
                 let alert = UIAlertController(title: "Sorry", message: "You are \(distance) meters away. That's too far to get rich. Don't be lazy!", preferredStyle: UIAlertControllerStyle.alert)

@@ -3,7 +3,7 @@
 //  AR_Hunt
 //
 //  Created by Jason Crouse on 6/1/18.
-//  Copyright © 2018 Razeware LLC. All rights reserved.
+//
 //
 
 import MapKit

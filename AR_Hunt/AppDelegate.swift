@@ -1,4 +1,7 @@
-// Jason Crouse 2018
+/*
+ * Copyright (c) 2018 JC Swing Solutions
+
+ */
 
 import UIKit
 

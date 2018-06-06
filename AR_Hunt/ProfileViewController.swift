@@ -46,8 +46,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             vc?.userLocation = userLocation
             // Pass winnings back to Map View
             vc?.winnings = winnings
-      }
-  }
-  
-
+        }
+    }
 }
+
+

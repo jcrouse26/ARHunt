@@ -26,3 +26,4 @@ class MapAnnotation: NSObject, MKAnnotation {
 				super.init()
 		}
 }
+

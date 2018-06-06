@@ -27,9 +27,9 @@ class MapViewController: UIViewController {
     var userLocation: CLLocation?
     var targets = [ARItem]()
     var previousDegrees : Double = 0
-	
-	let belcher : CLLocation = CLLocation(latitude: 37.768360, longitude: -122.430378)
-	
+    
+    let belcher : CLLocation = CLLocation(latitude: 37.768360, longitude: -122.430378)
+    
     func setupLocations() {
         // IMPORTANT: Item descriptions must be unique
         let firstTarget = ARItem(itemDescription: "1.12 BTC", location: CLLocation(latitude: belcher.coordinate.latitude, longitude: belcher.coordinate.longitude), itemNode: nil)
@@ -43,7 +43,7 @@ class MapViewController: UIViewController {
             }
         }
     }
-	
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -130,25 +130,25 @@ extension MapViewController: MKMapViewDelegate {
                     self.present(alert, animated: true)
                     
                     // create next object
-					
-					// Do some math to come up with next point, based on current point and previous path
+                    
+                    // Do some math to come up with next point, based on current point and previous path
                     let currentLat = coordinate.latitude
                     let currentLong = coordinate.longitude
                     let multiplier = 0.00135 // this is approximately 150 meters
                     let randDegrees = Double(arc4random_uniform(180)) - 90
                     let nextCoordinateLat = currentLat + multiplier*__cospi((randDegrees + previousDegrees)/180)
                     let nextCoordinateLong = currentLong + multiplier*__sinpi((randDegrees + previousDegrees)/180)
-					
-					// Put the pieces together to do the appropriate adding/removing of pins on the map, and CHANGE COLOR
+                    
+                    // Put the pieces together to do the appropriate adding/removing of pins on the map, and CHANGE COLOR
                     let newTarget = ARItem(itemDescription: "new", location: CLLocation(latitude: nextCoordinateLat, longitude: nextCoordinateLong), itemNode: nil)
                     let newAnnotation = MapAnnotation(location: newTarget.location.coordinate, item: newTarget)
                     self.mapView.addAnnotation(newAnnotation)
-					
-					// Some math to ensure proper bearing for next time
+                    
+                    // Some math to ensure proper bearing for next time
                     previousDegrees = randDegrees + previousDegrees
-					
-					// If we wanted to do an AR Screen...
-                    // transitionToGameScreen()
+                    
+                    // If we wanted to do an AR Screen...
+		
                     // Attempt to create it as a MapAnnotation (custom class)
                     guard let annotation = view.annotation as? MapAnnotation else { return }
                     annotation.captured = true

@@ -1,11 +1,18 @@
-// Jason Crouse copyright (c) 2018
-//
-///
-////
-/////
-////////
-////////////
-////////////////
+/*
+ //
+ ////
+ ////////
+ ////////////
+ ////////////////
+ //////// Copyright
+ //// Jason Crouse
+ / 2 /\ 0 /\ 1 /\ 8 /
+ / 0 /
+ / 1 /
+ / 8 /
+ */
+
+
 
 import UIKit
 import MapKit
@@ -14,6 +21,7 @@ import ARKit
 
 class MapViewController: UIViewController {
 	
+	@IBOutlet weak var winningsLabel: UILabel!
 	@IBOutlet weak var mapView: MKMapView!
 	var winnings : [String] = []
 	let locationManager = CLLocationManager()
@@ -23,6 +31,8 @@ class MapViewController: UIViewController {
 	var currentLat = 37.768436 // 68 Belcher
 	var currentLong = -122.430411 // 68 Belcher
 	
+    let belcher : CLLocation = CLLocation(latitude: 37.768360, longitude: -122.430378)
+    
 	func setupCourse() {
 		var i = 0
 		while i < 20 {
@@ -30,7 +40,7 @@ class MapViewController: UIViewController {
 			let randDegrees = Double(arc4random_uniform(180)) - 90
 			let nextCoordinateLat = currentLat + multiplier*__cospi((randDegrees + previousDegrees)/180)
 			let nextCoordinateLong = currentLong + multiplier*__sinpi((randDegrees + previousDegrees)/180)
-			let newTarget = ARItem(itemDescription: String(i), location: CLLocation(latitude: nextCoordinateLat, longitude: nextCoordinateLong), itemNode: nil)
+			let newTarget = ARItem(itemDescription: String(i + 1), location: CLLocation(latitude: nextCoordinateLat, longitude: nextCoordinateLong), itemNode: nil)
 			let newAnnotation = MapAnnotation(location: newTarget.location.coordinate, item: newTarget)
 			targets.append(newTarget)
 			self.mapView.addAnnotation(newAnnotation)
@@ -38,16 +48,6 @@ class MapViewController: UIViewController {
 			currentLat = nextCoordinateLat
 			currentLong = nextCoordinateLong
 			i += 1
-		}
-	}
-	func setupLocations() {
-		
-		// In this loop you iterate through all items inside the targets array and add an annotation for each target.
-		for item in targets {
-			let annotation = MapAnnotation(location: item.location.coordinate, item: item)
-			if !winnings.contains(annotation.item.itemDescription) {
-				self.mapView.addAnnotation(annotation)
-			}
 		}
 	}
 	
@@ -129,7 +129,7 @@ extension MapViewController: MKMapViewDelegate {
                     // For now... just let the homies get their prize... FOR FREE!
                     
                     winnings.append(title)
-					winningsLabel.text = String(winnings.count)
+                    winningsLabel.text = String(winnings.count)
                     
                     // Display alert
                     let alert = UIAlertController(title: "Congrats!", message: "You're RICH! You've won \(title)", preferredStyle: UIAlertControllerStyle.alert)
@@ -159,7 +159,7 @@ extension MapViewController: MKMapViewDelegate {
                     
                     // Some math to ensure proper bearing for next time
                     previousDegrees = randDegrees + previousDegrees
-		
+        
                     // Attempt to create it as a MapAnnotation (custom class)
                     guard let annotation = view.annotation as? MapAnnotation else { return }
                     annotation.captured = true

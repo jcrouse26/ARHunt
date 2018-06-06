@@ -66,7 +66,7 @@
                     </view>
                     <connections>
                         <outlet property="mapView" destination="s1B-Qz-1UN" id="wY0-Xr-FZv"/>
-                        <outlet property="winningsLabel" destination="p9x-iQ-Ihh" id="mz2-Zb-epZ"/>
+                        <outlet property="winningsLabel" destination="hKg-va-1gd" id="Y94-Fq-hkM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AGf-ao-mtZ" userLabel="First Responder" sceneMemberID="firstResponder"/>

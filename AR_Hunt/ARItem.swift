@@ -10,8 +10,8 @@ import CoreLocation
 import SceneKit
 
 struct ARItem {
-	let itemDescription : String
-	let location : CLLocation
+		let itemDescription : String
+		let location : CLLocation
 	
-	var itemNode: SCNNode?
+		var itemNode: SCNNode?
 }

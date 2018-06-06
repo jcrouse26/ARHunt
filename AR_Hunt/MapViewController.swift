@@ -121,7 +121,7 @@ extension MapViewController: MKMapViewDelegate {
         if let userCoordinate = userLocation {
             
             // Make sure the tapped item is within range of the users location.
-            if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) <= 40 {
+            if userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) <= 4000 {
                 // Add to array of winnings
                 
                 if let title = view.annotation!.title! {
@@ -142,23 +142,6 @@ extension MapViewController: MKMapViewDelegate {
                     // Add vibration so John's ladies can truly enjoy BitcoinGO ;)
                     AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
                     
-                    // create next object
-                    
-                    // Do some math to come up with next point, based on current point and previous path
-                    let currentLat = coordinate.latitude
-                    let currentLong = coordinate.longitude
-                    let multiplier = 0.00135 // this is approximately 150 meters
-                    let randDegrees = Double(arc4random_uniform(180)) - 90
-                    let nextCoordinateLat = currentLat + multiplier*__cospi((randDegrees + previousDegrees)/180)
-                    let nextCoordinateLong = currentLong + multiplier*__sinpi((randDegrees + previousDegrees)/180)
-                    
-                    // Put the pieces together to do the appropriate adding/removing of pins on the map, and CHANGE COLOR
-                    let newTarget = ARItem(itemDescription: "new", location: CLLocation(latitude: nextCoordinateLat, longitude: nextCoordinateLong), itemNode: nil)
-                    let newAnnotation = MapAnnotation(location: newTarget.location.coordinate, item: newTarget)
-                    self.mapView.addAnnotation(newAnnotation)
-                    
-                    // Some math to ensure proper bearing for next time
-                    previousDegrees = randDegrees + previousDegrees
         
                     // Attempt to create it as a MapAnnotation (custom class)
                     guard let annotation = view.annotation as? MapAnnotation else { return }

@@ -120,7 +120,9 @@ extension MapViewController: MKMapViewDelegate {
             }))
             self.present(alert, animated: true)
             
-            // deselect this pin
+            // deselect this pin and return
+            self.mapView.deselectAnnotation(view.annotation, animated: true)
+            return
         }
         
         

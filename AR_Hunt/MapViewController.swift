@@ -27,6 +27,7 @@ class MapViewController: UIViewController {
     var userLocation: CLLocation?
     var targets = [ARItem]()
     var previousDegrees : Double = -75 // set heading for WNW
+	var didSetUserLocation = false
     
     @IBOutlet weak var winningsLabel: UILabel!
     
@@ -34,8 +35,11 @@ class MapViewController: UIViewController {
     
     func setupLocations() {
         // IMPORTANT: Item descriptions must be unique
-        let firstTarget = ARItem(itemDescription: "1.12 BTC", location: CLLocation(latitude: belcher.coordinate.latitude, longitude: belcher.coordinate.longitude), itemNode: nil)
-        targets.append(firstTarget)
+		let firstTarget : ARItem?
+		if let userLocation = self.userLocation {
+			firstTarget = ARItem(itemDescription: "\(winnings.count)", location: userLocation, itemNode: nil)
+				targets.append(firstTarget!)
+		}
         
         // In this loop you iterate through all items inside the targets array and add an annotation for each target.
         for item in targets {
@@ -72,6 +76,11 @@ extension MapViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         self.userLocation = userLocation.location
+		if didSetUserLocation == false {
+			setupLocations()
+			didSetUserLocation = true
+			print(userLocation, "= userLocation")
+		}
     }
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let annotation = annotation as? MapAnnotation else { return nil }
@@ -97,11 +106,9 @@ extension MapViewController: MKMapViewDelegate {
         }
         if view.reuseIdentifier! == "pin" {
             // create an alert saying you've already won
-            let alert = UIAlertController(title: "Nice Try!", message: "You already collected this one. Get off your ass and collect a new one.", preferredStyle: UIAlertControllerStyle.alert)
+            // let alert = UIAlertController(title: "Nice Try!", message: "You already collected this one. Get off your ass and collect a new one.", preferredStyle: UIAlertControllerStyle.alert)
             
-            alert.addAction(UIAlertAction(title: "I'm sorry, won't happen again", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in
-                //print(alert)
-            }))
+            // alert.addAction(UIAlertAction(title: "I'm sorry, won't happen again", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in }))
             // self.present(alert, animated: true)
             
             // deselect this pin and return
@@ -168,9 +175,7 @@ extension MapViewController: MKMapViewDelegate {
                 let distance = Int(userCoordinate.distance(from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)))
                 let alert = UIAlertController(title: "Sorry", message: "You are \(distance) meters away. That's too far to get rich. Don't be lazy!", preferredStyle: UIAlertControllerStyle.alert)
                 
-                alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in
-                    print(alert)
-                }))
+                alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in }))
                 self.present(alert, animated: true)
                 
             }

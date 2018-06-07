@@ -38,7 +38,8 @@ class MapViewController: UIViewController {
         let firstTarget : ARItem?
         if let userLocation = self.userLocation {
             firstTarget = ARItem(itemDescription: "\(winnings.count)", location: userLocation, itemNode: nil)
-                targets.append(firstTarget!)
+			targets.append(firstTarget!)
+			didSetUserLocation = true
         }
         
         // In this loop you iterate through all items inside the targets array and add an annotation for each target.
@@ -78,8 +79,6 @@ extension MapViewController: MKMapViewDelegate {
         self.userLocation = userLocation.location
         if didSetUserLocation == false {
             setupLocations()
-            didSetUserLocation = true
-            print(userLocation, "= userLocation")
         }
     }
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {

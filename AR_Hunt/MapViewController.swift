@@ -101,6 +101,7 @@ extension MapViewController: MKMapViewDelegate {
         // Return and deselect if user has selected "My Location" instead of a pin
         if view.annotation?.title! == "My Location" {
             self.mapView.deselectAnnotation(view.annotation, animated: true)
+			mapView.userTrackingMode = MKUserTrackingMode.followWithHeading
             return
         }
         if view.reuseIdentifier! == "pin" {
@@ -153,7 +154,7 @@ extension MapViewController: MKMapViewDelegate {
                     let nextCoordinateLong = currentLong + multiplier*__sinpi((randDegrees + previousDegrees)/180)
                     
                     // Put the pieces together to do the appropriate adding/removing of pins on the map, and CHANGE COLOR
-                    let newTarget = ARItem(itemDescription: "new", location: CLLocation(latitude: nextCoordinateLat, longitude: nextCoordinateLong), itemNode: nil)
+					let newTarget = ARItem(itemDescription: "Pin #\(winnings.count)", location: CLLocation(latitude: nextCoordinateLat, longitude: nextCoordinateLong), itemNode: nil)
                     let newAnnotation = MapAnnotation(location: newTarget.location.coordinate, item: newTarget)
                     self.mapView.addAnnotation(newAnnotation)
                     
@@ -180,6 +181,7 @@ extension MapViewController: MKMapViewDelegate {
             }
             self.mapView.deselectAnnotation(view.annotation, animated: true)
         }
+		mapView.userTrackingMode = MKUserTrackingMode.followWithHeading
     }
     
 }

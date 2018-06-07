@@ -27,7 +27,7 @@ class MapViewController: UIViewController {
     var userLocation: CLLocation?
     var targets = [ARItem]()
     var previousDegrees : Double = -75 // set heading for WNW
-	var didSetUserLocation = false
+    var didSetUserLocation = false
     
     @IBOutlet weak var winningsLabel: UILabel!
     
@@ -35,11 +35,11 @@ class MapViewController: UIViewController {
     
     func setupLocations() {
         // IMPORTANT: Item descriptions must be unique
-		let firstTarget : ARItem?
-		if let userLocation = self.userLocation {
-			firstTarget = ARItem(itemDescription: "\(winnings.count)", location: userLocation, itemNode: nil)
-				targets.append(firstTarget!)
-		}
+        let firstTarget : ARItem?
+        if let userLocation = self.userLocation {
+            firstTarget = ARItem(itemDescription: "\(winnings.count)", location: userLocation, itemNode: nil)
+                targets.append(firstTarget!)
+        }
         
         // In this loop you iterate through all items inside the targets array and add an annotation for each target.
         for item in targets {
@@ -76,11 +76,11 @@ extension MapViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         self.userLocation = userLocation.location
-		if didSetUserLocation == false {
-			setupLocations()
-			didSetUserLocation = true
-			print(userLocation, "= userLocation")
-		}
+        if didSetUserLocation == false {
+            setupLocations()
+            didSetUserLocation = true
+            print(userLocation, "= userLocation")
+        }
     }
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let annotation = annotation as? MapAnnotation else { return nil }

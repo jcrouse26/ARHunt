@@ -26,7 +26,7 @@ class MapViewController: UIViewController {
     let locationManager = CLLocationManager()
     var userLocation: CLLocation?
     var targets = [ARItem]()
-    var previousDegrees : Double = -75
+    var previousDegrees : Double = -75 // set heading for WNW
     
 	@IBOutlet weak var winningsLabel: UILabel!
 	
@@ -102,7 +102,7 @@ extension MapViewController: MKMapViewDelegate {
             alert.addAction(UIAlertAction(title: "I'm sorry, won't happen again", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in
                 //print(alert)
             }))
-            self.present(alert, animated: true)
+            // self.present(alert, animated: true)
             
             // deselect this pin and return
             self.mapView.deselectAnnotation(view.annotation, animated: true)
@@ -128,12 +128,10 @@ extension MapViewController: MKMapViewDelegate {
 					winningsLabel.text = String(winnings.count)
                     
                     // Display alert
-                    let alert = UIAlertController(title: "Congrats!", message: "You're RICH! You've won \(title)", preferredStyle: UIAlertControllerStyle.alert)
+                    //let alert = UIAlertController(title: "Congrats!", message: "You're RICH! You've won \(title)", preferredStyle: UIAlertControllerStyle.alert)
                     
-                    alert.addAction(UIAlertAction(title: "Thanks!", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in
-                        print(alert)
-                    }))
-                    self.present(alert, animated: true)
+                    //alert.addAction(UIAlertAction(title: "Thanks!", style: UIAlertActionStyle.default, handler: { (alert: UIAlertAction!) in }))
+                    // self.present(alert, animated: true)
                     
                     // Add vibration so John's ladies can truly enjoy BitcoinGO ;)
                     AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
